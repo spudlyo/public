@@ -1,5 +1,6 @@
 #!/bin/bash
-cd /Users/mikeh/git/public || exit
+# This is just for educational purposes.
+cd ~/git/public || exit
 git add .
 git commit -am "Automatically published on $(date)."
 git push github
