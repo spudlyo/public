@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2019-11-13 Wed 19:56 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Git From the Ground Up</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Mike Hamrick" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/Users/mikeh/css/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="/Users/mikeh/css/readtheorg/css/font-awesome.min.css"/>
+<link rel="stylesheet" type="text/css" href="/Users/mikeh/css/readtheorg/css/readtheorg.css"/>
+<script src="/Users/mikeh/css/readtheorg/js/jquery.min.js"></script>
+<script src="/Users/mikeh/css/readtheorg/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/Users/mikeh/css/readtheorg/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="/Users/mikeh/css/readtheorg/js/readtheorg.js"></script>
+<style type="text/css">
+pre.src:hover:before { display: none; }
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Git From the Ground Up</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga0ccbde">Introduction</a></li>
+<li><a href="#org437c745">Where are we, and is git happy?</a></li>
+<li><a href="#org03b2d1b">Let's create a .git directory</a></li>
+<li><a href="#org2721f3c">Let's create some things</a></li>
+<li><a href="#org8c960c9">Let's hash something!</a></li>
+<li><a href="#org9ad8e9d">Where did git put it?</a></li>
+<li><a href="#org3371226">Can we just look at the object?</a></li>
+<li><a href="#org887bf29">Let's do it ourselves</a></li>
+<li><a href="#org78fa962">Did it work?</a></li>
+<li><a href="#orgc967494">Final thoughts</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga0ccbde" class="outline-2">
+<h2 id="orga0ccbde">Introduction</h2>
+<div class="outline-text-2" id="text-orga0ccbde">
+<p>
+We're going to learn a little something about the git data model by crafting the
+<code>.git</code> directory and a blob object by hand. It'll be fun!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org437c745" class="outline-2">
+<h2 id="org437c745">Where are we, and is git happy?</h2>
+<div class="outline-text-2" id="text-org437c745">
+<p>
+Let's start by seeing where we are, and if we're in a valid git repository.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #DCDCCC; font-weight: bold;">echo</span> <span style="color: #CC9393;">"My current working dir is: $(</span><span style="color: #CC9393;">dirs</span><span style="color: #CC9393;"> +0)"</span>
+git status 2&gt;&amp;1 || <span style="color: #DCDCCC; font-weight: bold;">echo</span> Git is not happy.
+</pre>
+</div>
+
+<pre class="example">
+My current working dir is: ~/org/tmp
+fatal: not a git repository (or any of the parent directories): .git
+Git is not happy.
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org03b2d1b" class="outline-2">
+<h2 id="org03b2d1b">Let's create a .git directory</h2>
+<div class="outline-text-2" id="text-org03b2d1b">
+<p>
+OK, so we know that we need a <code>.git</code> directory to start things off. Let's create
+one now.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">mkdir -p .git
+git status 2&gt;&amp;1 || <span style="color: #DCDCCC; font-weight: bold;">echo</span> Git is not happy.
+</pre>
+</div>
+
+<pre class="example">
+fatal: not a git repository (or any of the parent directories): .git
+Git is not happy.
+</pre>
+
+<p>
+Still not happy, clearly we've got some work to do.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2721f3c" class="outline-2">
+<h2 id="org2721f3c">Let's create some things</h2>
+<div class="outline-text-2" id="text-org2721f3c">
+<p>
+Git needs a few things to be happy. It needs a place to stash objects, a place
+to track refs, and a HEAD file which points to our current commit.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">mkdir -p .git/objects
+mkdir -p .git/refs
+mkdir -p .git/refs/heads
+<span style="color: #DCDCCC; font-weight: bold;">echo</span> <span style="color: #CC9393;">"ref: refs/heads/master"</span> &gt; .git/HEAD
+tree .git/
+</pre>
+</div>
+
+<pre class="example">
+.git/
+├── HEAD
+├── objects
+└── refs
+    └── heads
+
+3 directories, 1 file
+</pre>
+
+<p>
+This is essentially the skeleton we need for git, just three directories and
+one file. At this point git should be totally happy, let's verify.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">git status 2&gt;&amp;1 || <span style="color: #DCDCCC; font-weight: bold;">echo</span> Git is not happy.
+</pre>
+</div>
+
+<pre class="example">
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+</pre>
+
+<p>
+OK great, when git is happy, everyone is happy!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8c960c9" class="outline-2">
+<h2 id="org8c960c9">Let's hash something!</h2>
+<div class="outline-text-2" id="text-org8c960c9">
+<p>
+We're going to hash the string "Welcome to SeaGL 2019!" using the <code>git
+hash-object</code> command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell" id="orgd475c42"><span style="color: #DCDCCC; font-weight: bold;">echo</span> -n <span style="color: #CC9393;">'Welcome to SeaGL 2019!'</span> | git hash-object --stdin -w
+</pre>
+</div>
+
+<pre class="example">
+05d5390cf537efeab95b0e80c987b83fc855bca0
+</pre>
+
+<p>
+So we've asked git to hash the content we passed in via STDIN and we've also
+asked it to store it in the object database. It returned a 40 character SHA1 hash
+of the content, and if you've ever worked with git before you've likely seen
+these. You can also refer to this hash by its first four characters like
+<code>05d5</code> which is pretty handy.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9ad8e9d" class="outline-2">
+<h2 id="org9ad8e9d">Where did git put it?</h2>
+<div class="outline-text-2" id="text-org9ad8e9d">
+<p>
+In the previous example we asked <code>git hash-object</code> to write our string the objects
+database. Let's see how that was stored in the <code>.git</code> directory.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">tree .git
+</pre>
+</div>
+
+<pre class="example">
+.git
+├── HEAD
+├── objects
+│   └── 05
+│       └── d5390cf537efeab95b0e80c987b83fc855bca0
+└── refs
+    └── heads
+
+4 directories, 2 files
+</pre>
+
+<p>
+Because file systems get angry with you when you stash too many files in the same
+directory, git shards the directory based on the first two bytes of the hash.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3371226" class="outline-2">
+<h2 id="org3371226">Can we just look at the object?</h2>
+<div class="outline-text-2" id="text-org3371226">
+<p>
+Let's see if we can find part of the string we hashed inside the object.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">grep -F Welcome .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 || <span style="color: #DCDCCC; font-weight: bold;">echo</span> Nope.
+</pre>
+</div>
+
+<pre class="example">
+Nope.
+</pre>
+
+<p>
+Nope. Git stores the objects in compressed format, but we can use <code>git cat-file</code>
+to take a peek inside it. We'll run it with the <code>-p</code> argument to pretty-print the
+object. We'll also reference the object by its short name, because typing long
+git hashes is no fun!
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell" id="org0a09051">git cat-file -p 05d5
+</pre>
+</div>
+
+<pre class="example">
+Welcome to SeaGL 2019!
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org887bf29" class="outline-2">
+<h2 id="org887bf29">Let's do it ourselves</h2>
+<div class="outline-text-2" id="text-org887bf29">
+<p>
+OK, let's figure out how git compresses the file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">cat .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 | file -
+cat .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 | gunzip || <span style="color: #DCDCCC; font-weight: bold;">echo</span> Nope.
+</pre>
+</div>
+
+<pre class="example">
+/dev/stdin: VAX COFF executable - version 19790
+Nope.
+</pre>
+
+<p>
+Neither <code>file</code> or <code>gunzip</code> no quite what to make of it. I happen to know that it's a <code>zlib</code>
+stream. The program <code>pigz</code> can deal with these.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">cat .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 | pigz -d | hexdump -C
+</pre>
+</div>
+
+<pre class="example">
+00000000  62 6c 6f 62 20 32 32 00  57 65 6c 63 6f 6d 65 20  |blob 22.Welcome |
+00000010  74 6f 20 53 65 61 47 4c  20 32 30 31 39 21        |to SeaGL 2019!|
+0000001e
+</pre>
+
+<p>
+We can see from the hex output that git is storing our hashed string with a
+header, which contains <code>blob</code> which is the type of thing we're storing, followed
+by <code>22</code>, which is the number of bytes of the thing we're
+storing, followed by a null byte.
+</p>
+
+<p>
+Since we're doing things from the ground up, let's hash it ourselves using
+Python.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> hashlib
+<span style="color: #DFAF8F;">hashme</span> = <span style="color: #CC9393;">'Welcome to SeaGL 2019!'</span>
+<span style="color: #DFAF8F;">header</span> = <span style="color: #CC9393;">"blob "</span> + <span style="color: #DCDCCC; font-weight: bold;">str</span>(<span style="color: #DCDCCC; font-weight: bold;">len</span>(hashme)) + <span style="color: #CC9393;">"\0"</span>
+<span style="color: #DFAF8F;">myblob</span> = (header + hashme).encode(<span style="color: #CC9393;">'utf8'</span>)
+<span style="color: #DFAF8F;">gitsha</span> = hashlib.sha1(myblob).hexdigest()
+
+<span style="color: #F0DFAF; font-weight: bold;">print</span>(gitsha)
+</pre>
+</div>
+
+<pre class="example">
+05d5390cf537efeab95b0e80c987b83fc855bca0
+</pre>
+
+<p>
+So now we've figured out how to hash the string like git would, now we just need
+to compress it and save it. First let's get rid of the object we previously
+created.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">rm .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 &amp;&amp; <span style="color: #DCDCCC; font-weight: bold;">echo</span> <span style="color: #CC9393;">"OK."</span>
+</pre>
+</div>
+
+<p>
+Here we go, this will be much like the previous program except now
+it will compress and then save the file!
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> hashlib, zlib
+<span style="color: #DFAF8F;">hashme</span> = <span style="color: #CC9393;">'Welcome to SeaGL 2019!'</span>
+<span style="color: #DFAF8F;">header</span> = <span style="color: #CC9393;">"blob "</span> + <span style="color: #DCDCCC; font-weight: bold;">str</span>(<span style="color: #DCDCCC; font-weight: bold;">len</span>(hashme)) + <span style="color: #CC9393;">"\0"</span>
+<span style="color: #DFAF8F;">myblob</span> = (header + hashme).encode(<span style="color: #CC9393;">'utf8'</span>)
+<span style="color: #DFAF8F;">gitsha</span> = hashlib.sha1(myblob).hexdigest()
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calculate filename</span>
+<span style="color: #DFAF8F;">gitobj</span> = f<span style="color: #CC9393;">".git/objects/{gitsha[:2]}/{gitsha[2:]}"</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Write out the binary bytes!</span>
+<span style="color: #DFAF8F;">myfile</span> = <span style="color: #DCDCCC; font-weight: bold;">open</span>(gitobj, <span style="color: #CC9393;">'wb'</span>)
+myfile.write(zlib.compress(myblob))
+myfile.close()
+<span style="color: #F0DFAF; font-weight: bold;">print</span>(f<span style="color: #CC9393;">"wrote: {gitobj}"</span>)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org78fa962" class="outline-2">
+<h2 id="org78fa962">Did it work?</h2>
+<div class="outline-text-2" id="text-org78fa962">
+<p>
+Now let's use <code>git cat-file</code> to verify that our program did everything
+right.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">git cat-file -p 05d5
+</pre>
+</div>
+
+<pre class="example">
+Welcome to SeaGL 2019!
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgc967494" class="outline-2">
+<h2 id="orgc967494">Final thoughts</h2>
+<div class="outline-text-2" id="text-orgc967494">
+<p>
+In a future post, I'll show how we can use similar techniques to craft
+git trees and commits. See ya then!
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Mike Hamrick</p>
+<p class="email">Email: <a href="mailto:mikeh@muppetlabs.com">mikeh@muppetlabs.com</a></p>
+<p class="date">Created: 2019-11-13 Wed 19:56</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
