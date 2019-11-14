@@ -1,4 +1,4 @@
-# Created 2019-11-13 Wed 21:29
+# Created 2019-11-13 Wed 21:56
 #+TITLE: Git From the Ground Up
 #+AUTHOR: Mike Hamrick
 #+EMAIL: mikeh@muppetlabs.com
@@ -14,7 +14,7 @@ We're going to learn a little something about the git data model by crafting the
 * Where are we, and is git happy?
 Let's start by seeing where we are, and if we're in a valid git repository.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 echo "My current working dir is: $(dirs +0)"
 git status 2>&1 || echo Git is not happy.
 #+END_SRC
@@ -30,7 +30,7 @@ Git is not happy.
 OK, so we know that we need a =.git= directory to start things off. Let's create
 one now.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 mkdir -p .git
 git status 2>&1 || echo Git is not happy.
 #+END_SRC
@@ -47,7 +47,7 @@ Still not happy, clearly we've got some work to do.
 Git needs a few things to be happy. It needs a place to stash objects, a place
 to track refs, and a HEAD file which points to our current commit.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 mkdir -p .git/objects
 mkdir -p .git/refs
 mkdir -p .git/refs/heads
@@ -69,7 +69,7 @@ tree .git/
 This is essentially the skeleton we need for git, just three directories and
 one file. At this point git should be totally happy, let's verify.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 git status 2>&1 || echo Git is not happy.
 #+END_SRC
 
@@ -85,11 +85,11 @@ nothing to commit (create/copy files and use "git add" to track)
 OK great, when git is happy, everyone is happy!
 
 * Let's hash something!
-We're going to hash the string "Welcome to SeaGL 2019!" using the =git
-hash-object= command.
+We're going to hash the string "Welcome to SeaGL 2019!" by using the git
+plumbing command =hash-object=.
 
 #+NAME: hashobject
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 echo -n 'Welcome to SeaGL 2019!' | git hash-object --stdin -w
 #+END_SRC
 
@@ -108,7 +108,7 @@ these. You can also refer to this hash by its first four characters like
 In the previous example we asked =git hash-object= to write our string the objects
 database. Let's see how that was stored in the =.git= directory.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 tree .git
 #+END_SRC
 
@@ -131,7 +131,7 @@ directory, git shards the directory based on the first two bytes of the hash.
 * Can we just look at the object?
 Let's see if we can find part of the string we hashed inside the object.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 grep -F Welcome .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 || echo Nope.
 #+END_SRC
 
@@ -146,7 +146,7 @@ object. We'll also reference the object by its short name, because typing long
 git hashes is no fun!
 
 #+NAME: myhello
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 git cat-file -p 05d5
 #+END_SRC
 
@@ -158,7 +158,7 @@ Welcome to SeaGL 2019!
 * Let's do it ourselves
 OK, let's figure out how git compresses the file.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 cat .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 | file -
 cat .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 | gunzip || echo Nope.
 #+END_SRC
@@ -172,7 +172,7 @@ Nope.
 Neither =file= or =gunzip= no quite what to make of it. I happen to know that it's a =zlib=
 stream. The program =pigz= can deal with these.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 cat .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 | pigz -d | hexdump -C
 #+END_SRC
 
@@ -191,7 +191,7 @@ storing, followed by a null byte.
 Since we're doing things from the ground up, let's hash it ourselves using
 Python.
 
-#+BEGIN_SRC python :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC python :exports both
 import hashlib
 hashme = 'Welcome to SeaGL 2019!'
 header = "blob " + str(len(hashme)) + "\0"
@@ -210,14 +210,14 @@ So now we've figured out how to hash the string like git would, now we just need
 to compress it and save it. First let's get rid of the object we previously
 created.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 rm .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 && echo "OK."
 #+END_SRC
 
 Here we go, this will be much like the previous program except now
 it will compress and then save the file!
 
-#+BEGIN_SRC python :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC python :exports both
 import hashlib, zlib
 hashme = 'Welcome to SeaGL 2019!'
 header = "blob " + str(len(hashme)) + "\0"
@@ -238,7 +238,7 @@ print(f"wrote: {gitobj}")
 Now let's use =git cat-file= to verify that our program did everything
 right.
 
-#+BEGIN_SRC shell :exports both :exports both :exports both :exports both :exports both :exports both :exports both
+#+BEGIN_SRC shell :exports both
 git cat-file -p 05d5
 #+END_SRC
 

@@ -69,7 +69,7 @@ OK great, when git is happy, everyone is happy!
 
 # Let's hash something!
 
-We're going to hash the string "Welcome to SeaGL 2019!" using the `git hash-object` command.
+We're going to hash the string "Welcome to SeaGL 2019!" by using the git plumbing command `hash-object`.
 
 ```shell
 echo -n 'Welcome to SeaGL 2019!' | git hash-object --stdin -w
