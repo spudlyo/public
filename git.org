@@ -1,4 +1,4 @@
-# Created 2019-11-13 Wed 21:56
+# Created 2019-11-13 Wed 22:01
 #+TITLE: Git From the Ground Up
 #+AUTHOR: Mike Hamrick
 #+EMAIL: mikeh@muppetlabs.com
@@ -44,7 +44,7 @@ Git is not happy.
 Still not happy, clearly we've got some work to do.
 
 * Let's create some things
-Git needs a few things to be happy. It needs a place to stash objects, a place
+Git needs a few things to be happy -- it needs a place to stash objects, a place
 to track refs, and a HEAD file which points to our current commit.
 
 #+BEGIN_SRC shell :exports both

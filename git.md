@@ -34,7 +34,7 @@ Still not happy, clearly we've got some work to do.
 
 # Let's create some things
 
-Git needs a few things to be happy. It needs a place to stash objects, a place to track refs, and a HEAD file which points to our current commit.
+Git needs a few things to be happy &#x2013; it needs a place to stash objects, a place to track refs, and a HEAD file which points to our current commit.
 
 ```shell
 mkdir -p .git/objects
