@@ -1,6 +1,6 @@
 # Introduction
 
-We're going to learn a little something about the git data model by crafting the `.git` directory and a blob object by hand. It'll be fun!
+We're going to learn a little something about the git data model by crafting the `.git` directory and blob objects by hand. It'll be fun!
 
 
 # Where are we, and is git happy?
@@ -17,59 +17,40 @@ git status 2>&1 || echo Git is not happy.
     Git is not happy.
 
 
-# Let's create a .git directory
+# Let's create the .git directory
 
-OK, so we know that we need a `.git` directory to start things off. Let's create one now.
+Ok, so we know that we need a `.git` directory to start things off. Let's create one and fill it with the stuff that git needs.
 
 ```shell
 mkdir -p .git
-git status 2>&1 || echo Git is not happy.
-```
-
-    fatal: not a git repository (or any of the parent directories): .git
-    Git is not happy.
-
-Still not happy, clearly we've got some work to do.
-
-
-# Let's create some things
-
-Git needs a few things to be happy &#x2013; it needs a place to stash objects, a place to track refs, and a HEAD file which points to our current commit.
-
-```shell
 mkdir -p .git/objects
 mkdir -p .git/refs
 mkdir -p .git/refs/heads
 echo "ref: refs/heads/master" > .git/HEAD
-tree .git/
+tree .git
+git status 2>&1 && echo Git is happy!
 ```
 
-    .git/
+    .git
     ├── HEAD
     ├── objects
     └── refs
         └── heads
 
     3 directories, 1 file
-
-This is essentially the skeleton we need for git, just three directories and one file. At this point git should be totally happy, let's verify.
-
-```shell
-git status 2>&1 || echo Git is not happy.
-```
-
     On branch master
 
     No commits yet
 
     nothing to commit (create/copy files and use "git add" to track)
+    Git is happy!
 
-OK great, when git is happy, everyone is happy!
+Git needs a few things to be happy &#x2013; it needs a place to stash objects, a place to track refs, and a HEAD file which points to our current commit, and as you can see git is now happy!
 
 
 # Let's hash something!
 
-We're going to hash the string "Welcome to SeaGL 2019!" by using the git plumbing command `hash-object`.
+We're going to hash the string "Welcome to SeaGL 2019!" by using the git plumbing command `hash object`.
 
 ```shell
 echo -n 'Welcome to SeaGL 2019!' | git hash-object --stdin -w
@@ -77,12 +58,12 @@ echo -n 'Welcome to SeaGL 2019!' | git hash-object --stdin -w
 
     05d5390cf537efeab95b0e80c987b83fc855bca0
 
-So we've asked git to hash the content we passed in via STDIN and we've also asked it to store it in the object database. It returned a 40 character SHA1 hash of the content, and if you've ever worked with git before you've likely seen these. You can also refer to this hash by its first four characters like `05d5` which is pretty handy.
+We've asked git to hash the content we passed in via STDIN and we've also asked it to store it in the object database. It returned a 40 character SHA1 hash of the content, and if you've ever worked with git before, you've likely seen one of these. You can also refer to this hash by its first four characters like `05d5` which is pretty handy.
 
 
 # Where did git put it?
 
-In the previous example we asked `git hash-object` to write our string the objects database. Let's see how that was stored in the `.git` directory.
+Let's see how that was stored in the `.git` directory.
 
 ```shell
 tree .git
@@ -98,20 +79,12 @@ tree .git
 
     4 directories, 2 files
 
-Because file systems get angry with you when you stash too many files in the same directory, git shards the directory based on the first two bytes of the hash.
+Because file systems get angry with you when you try to stash too many files in the same directory, git shards the directory based on the first two bytes of the hash.
 
 
 # Can we just look at the object?
 
-Let's see if we can find part of the string we hashed inside the object.
-
-```shell
-grep -F Welcome .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 || echo Nope.
-```
-
-    Nope.
-
-Nope. Git stores the objects in compressed format, but we can use `git cat-file` to take a peek inside it. We'll run it with the `-p` argument to pretty-print the object. We'll also reference the object by its short name, because typing long git hashes is no fun!
+Nope. Git stores the objects in compressed format, but we can use `git cat-file` to take a peek inside it. We'll run it with the `-p` argument to pretty-print the object.
 
 ```shell
 git cat-file -p 05d5
@@ -132,7 +105,7 @@ cat .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 | gunzip || echo Nope
     /dev/stdin: VAX COFF executable - version 19790
     Nope.
 
-Neither `file` or `gunzip` no quite what to make of it. I happen to know that it's a `zlib` stream. The program `pigz` can deal with these.
+Neither `file` or `gunzip` know quite what to make of it. I happen to know that it's a zlib stream. The program `pigz` can deal with these.
 
 ```shell
 cat .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 | pigz -d | hexdump -C
@@ -161,7 +134,7 @@ print(gitsha)
 So now we've figured out how to hash the string like git would, now we just need to compress it and save it. First let's get rid of the object we previously created.
 
 ```shell
-rm .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 && echo "OK."
+rm .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0
 ```
 
 Here we go, this will be much like the previous program except now it will compress and then save the file!
@@ -182,7 +155,7 @@ print(f"wrote: {gitobj}")
 ```
 
 
-# Did it work?
+# Did it work!?
 
 Now let's use `git cat-file` to verify that our program did everything right.
 

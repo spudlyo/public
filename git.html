@@ -3,7 +3,6 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-11-13 Wed 22:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Git From the Ground Up</title>
@@ -244,33 +243,32 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5bb7a11">Introduction</a></li>
-<li><a href="#orgba49a3f">Where are we, and is git happy?</a></li>
-<li><a href="#org4473448">Let's create a .git directory</a></li>
-<li><a href="#org6511cce">Let's create some things</a></li>
-<li><a href="#orgac3d467">Let's hash something!</a></li>
-<li><a href="#orga98a1e9">Where did git put it?</a></li>
-<li><a href="#orgf69477a">Can we just look at the object?</a></li>
-<li><a href="#orgf858fe7">Let's do it ourselves</a></li>
-<li><a href="#org5d4fe45">Did it work?</a></li>
-<li><a href="#orgf00cffd">Final thoughts</a></li>
+<li><a href="#orgac99b96">Introduction</a></li>
+<li><a href="#org337a83d">Where are we, and is git happy?</a></li>
+<li><a href="#org5e89b0e">Let's create the .git directory</a></li>
+<li><a href="#org75d2559">Let's hash something!</a></li>
+<li><a href="#org6bbdcd4">Where did git put it?</a></li>
+<li><a href="#org4a571ea">Can we just look at the object?</a></li>
+<li><a href="#org5de32b4">Let's do it ourselves</a></li>
+<li><a href="#org3fd6172">Did it work!?</a></li>
+<li><a href="#org63d1f39">Final thoughts</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5bb7a11" class="outline-2">
-<h2 id="org5bb7a11">Introduction</h2>
-<div class="outline-text-2" id="text-org5bb7a11">
+<div id="outline-container-orgac99b96" class="outline-2">
+<h2 id="orgac99b96">Introduction</h2>
+<div class="outline-text-2" id="text-orgac99b96">
 <p>
 We're going to learn a little something about the git data model by crafting the
-<code>.git</code> directory and a blob object by hand. It'll be fun!
+<code>.git</code> directory and blob objects by hand. It'll be fun!
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgba49a3f" class="outline-2">
-<h2 id="orgba49a3f">Where are we, and is git happy?</h2>
-<div class="outline-text-2" id="text-orgba49a3f">
+<div id="outline-container-org337a83d" class="outline-2">
+<h2 id="org337a83d">Where are we, and is git happy?</h2>
+<div class="outline-text-2" id="text-org337a83d">
 <p>
 Let's start by seeing where we are, and if we're in a valid git repository.
 </p>
@@ -289,92 +287,59 @@ Git is not happy.
 </div>
 </div>
 
-<div id="outline-container-org4473448" class="outline-2">
-<h2 id="org4473448">Let's create a .git directory</h2>
-<div class="outline-text-2" id="text-org4473448">
+<div id="outline-container-org5e89b0e" class="outline-2">
+<h2 id="org5e89b0e">Let's create the .git directory</h2>
+<div class="outline-text-2" id="text-org5e89b0e">
 <p>
-OK, so we know that we need a <code>.git</code> directory to start things off. Let's create
-one now.
+Ok, so we know that we need a <code>.git</code> directory to start things off. Let's create
+one and fill it with the stuff that git needs.
 </p>
 
 <div class="org-src-container">
 <pre class="src src-shell">mkdir -p .git
-git status 2&gt;&amp;1 || <span style="color: #DCDCCC; font-weight: bold;">echo</span> Git is not happy.
-</pre>
-</div>
-
-<pre class="example">
-fatal: not a git repository (or any of the parent directories): .git
-Git is not happy.
-</pre>
-
-<p>
-Still not happy, clearly we've got some work to do.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org6511cce" class="outline-2">
-<h2 id="org6511cce">Let's create some things</h2>
-<div class="outline-text-2" id="text-org6511cce">
-<p>
-Git needs a few things to be happy &#x2013; it needs a place to stash objects, a place
-to track refs, and a HEAD file which points to our current commit.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell">mkdir -p .git/objects
+mkdir -p .git/objects
 mkdir -p .git/refs
 mkdir -p .git/refs/heads
 <span style="color: #DCDCCC; font-weight: bold;">echo</span> <span style="color: #CC9393;">"ref: refs/heads/master"</span> &gt; .git/HEAD
-tree .git/
+tree .git
+git status 2&gt;&amp;1 &amp;&amp; <span style="color: #DCDCCC; font-weight: bold;">echo</span> Git is happy!
 </pre>
 </div>
 
 <pre class="example">
-.git/
+.git
 ├── HEAD
 ├── objects
 └── refs
     └── heads
 
 3 directories, 1 file
-</pre>
-
-<p>
-This is essentially the skeleton we need for git, just three directories and
-one file. At this point git should be totally happy, let's verify.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell">git status 2&gt;&amp;1 || <span style="color: #DCDCCC; font-weight: bold;">echo</span> Git is not happy.
-</pre>
-</div>
-
-<pre class="example">
 On branch master
 
 No commits yet
 
 nothing to commit (create/copy files and use "git add" to track)
+Git is happy!
 </pre>
 
 <p>
-OK great, when git is happy, everyone is happy!
+Git needs a few things to be happy &#x2013; it needs a place to stash objects, a place
+to track refs, and a HEAD file which points to our current commit, and as you
+can see git is now happy!
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgac3d467" class="outline-2">
-<h2 id="orgac3d467">Let's hash something!</h2>
-<div class="outline-text-2" id="text-orgac3d467">
+<div id="outline-container-org75d2559" class="outline-2">
+<h2 id="org75d2559">Let's hash something!</h2>
+<div class="outline-text-2" id="text-org75d2559">
 <p>
 We're going to hash the string "Welcome to SeaGL 2019!" by using the git
-plumbing command <code>hash-object</code>.
+plumbing command <code>hash object</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell" id="orgde8dcad"><span style="color: #DCDCCC; font-weight: bold;">echo</span> -n <span style="color: #CC9393;">'Welcome to SeaGL 2019!'</span> | git hash-object --stdin -w
+<pre class="src src-shell" id="orgb4001c0"><span style="color: #DCDCCC; font-weight: bold;">echo</span> -n <span style="color: #CC9393;">'Welcome to SeaGL 2019!'</span> | git hash-object --stdin -w
 </pre>
 </div>
 
@@ -383,21 +348,20 @@ plumbing command <code>hash-object</code>.
 </pre>
 
 <p>
-So we've asked git to hash the content we passed in via STDIN and we've also
-asked it to store it in the object database. It returned a 40 character SHA1 hash
-of the content, and if you've ever worked with git before you've likely seen
-these. You can also refer to this hash by its first four characters like
+We've asked git to hash the content we passed in via STDIN and we've also asked
+it to store it in the object database. It returned a 40 character SHA1 hash of
+the content, and if you've ever worked with git before, you've likely seen one
+of these. You can also refer to this hash by its first four characters like
 <code>05d5</code> which is pretty handy.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orga98a1e9" class="outline-2">
-<h2 id="orga98a1e9">Where did git put it?</h2>
-<div class="outline-text-2" id="text-orga98a1e9">
+<div id="outline-container-org6bbdcd4" class="outline-2">
+<h2 id="org6bbdcd4">Where did git put it?</h2>
+<div class="outline-text-2" id="text-org6bbdcd4">
 <p>
-In the previous example we asked <code>git hash-object</code> to write our string the objects
-database. Let's see how that was stored in the <code>.git</code> directory.
+Let's see how that was stored in the <code>.git</code> directory.
 </p>
 
 <div class="org-src-container">
@@ -418,37 +382,24 @@ database. Let's see how that was stored in the <code>.git</code> directory.
 </pre>
 
 <p>
-Because file systems get angry with you when you stash too many files in the same
-directory, git shards the directory based on the first two bytes of the hash.
+Because file systems get angry with you when you try to stash too many files in
+the same directory, git shards the directory based on the first two bytes of the
+hash.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgf69477a" class="outline-2">
-<h2 id="orgf69477a">Can we just look at the object?</h2>
-<div class="outline-text-2" id="text-orgf69477a">
-<p>
-Let's see if we can find part of the string we hashed inside the object.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell">grep -F Welcome .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 || <span style="color: #DCDCCC; font-weight: bold;">echo</span> Nope.
-</pre>
-</div>
-
-<pre class="example">
-Nope.
-</pre>
-
+<div id="outline-container-org4a571ea" class="outline-2">
+<h2 id="org4a571ea">Can we just look at the object?</h2>
+<div class="outline-text-2" id="text-org4a571ea">
 <p>
 Nope. Git stores the objects in compressed format, but we can use <code>git cat-file</code>
 to take a peek inside it. We'll run it with the <code>-p</code> argument to pretty-print the
-object. We'll also reference the object by its short name, because typing long
-git hashes is no fun!
+object.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell" id="org337b6ce">git cat-file -p 05d5
+<pre class="src src-shell" id="orgf15badd">git cat-file -p 05d5
 </pre>
 </div>
 
@@ -458,9 +409,9 @@ Welcome to SeaGL 2019!
 </div>
 </div>
 
-<div id="outline-container-orgf858fe7" class="outline-2">
-<h2 id="orgf858fe7">Let's do it ourselves</h2>
-<div class="outline-text-2" id="text-orgf858fe7">
+<div id="outline-container-org5de32b4" class="outline-2">
+<h2 id="org5de32b4">Let's do it ourselves</h2>
+<div class="outline-text-2" id="text-org5de32b4">
 <p>
 OK, let's figure out how git compresses the file.
 </p>
@@ -477,8 +428,8 @@ Nope.
 </pre>
 
 <p>
-Neither <code>file</code> or <code>gunzip</code> no quite what to make of it. I happen to know that it's a <code>zlib</code>
-stream. The program <code>pigz</code> can deal with these.
+Neither <code>file</code> or <code>gunzip</code> know quite what to make of it. I happen to know that it's
+a zlib stream. The program <code>pigz</code> can deal with these.
 </p>
 
 <div class="org-src-container">
@@ -526,7 +477,7 @@ created.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell">rm .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0 &amp;&amp; <span style="color: #DCDCCC; font-weight: bold;">echo</span> <span style="color: #CC9393;">"OK."</span>
+<pre class="src src-shell">rm .git/objects/05/d5390cf537efeab95b0e80c987b83fc855bca0
 </pre>
 </div>
 
@@ -553,9 +504,9 @@ myfile.close()
 </div>
 </div>
 
-<div id="outline-container-org5d4fe45" class="outline-2">
-<h2 id="org5d4fe45">Did it work?</h2>
-<div class="outline-text-2" id="text-org5d4fe45">
+<div id="outline-container-org3fd6172" class="outline-2">
+<h2 id="org3fd6172">Did it work!?</h2>
+<div class="outline-text-2" id="text-org3fd6172">
 <p>
 Now let's use <code>git cat-file</code> to verify that our program did everything
 right.
@@ -572,12 +523,12 @@ Welcome to SeaGL 2019!
 </div>
 </div>
 
-<div id="outline-container-orgf00cffd" class="outline-2">
-<h2 id="orgf00cffd">Final thoughts</h2>
-<div class="outline-text-2" id="text-orgf00cffd">
+<div id="outline-container-org63d1f39" class="outline-2">
+<h2 id="org63d1f39">Final thoughts</h2>
+<div class="outline-text-2" id="text-org63d1f39">
 <p>
-In a future post, I'll show how we can use similar techniques to craft
-git trees and commits. See ya then!
+In a future post, I'll show how we can use similar techniques to craft git trees
+and commits. See ya then!
 </p>
 </div>
 </div>
@@ -585,7 +536,6 @@ git trees and commits. See ya then!
 <div id="postamble" class="status">
 <p class="author">Author: Mike Hamrick</p>
 <p class="email">Email: <a href="mailto:mikeh@muppetlabs.com">mikeh@muppetlabs.com</a></p>
-<p class="date">Created: 2019-11-13 Wed 22:00</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
