@@ -243,22 +243,22 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgac99b96">Introduction</a></li>
-<li><a href="#org337a83d">Where are we, and is git happy?</a></li>
-<li><a href="#org5e89b0e">Let's create the .git directory</a></li>
-<li><a href="#org75d2559">Let's hash something!</a></li>
-<li><a href="#org6bbdcd4">Where did git put it?</a></li>
-<li><a href="#org4a571ea">Can we just look at the object?</a></li>
-<li><a href="#org5de32b4">Let's do it ourselves</a></li>
-<li><a href="#org3fd6172">Did it work!?</a></li>
-<li><a href="#org63d1f39">Final thoughts</a></li>
+<li><a href="#orgead9dee">Introduction</a></li>
+<li><a href="#orga1f5291">Where are we, and is git happy?</a></li>
+<li><a href="#org1679133">Let's create the .git directory</a></li>
+<li><a href="#org971f742">Let's hash something!</a></li>
+<li><a href="#org49c5bae">Where did git put it?</a></li>
+<li><a href="#org3943b72">Can we just look at the object?</a></li>
+<li><a href="#org35e57ff">Let's do it ourselves</a></li>
+<li><a href="#orgcf24261">Did it work!?</a></li>
+<li><a href="#org837666f">Final thoughts</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgac99b96" class="outline-2">
-<h2 id="orgac99b96">Introduction</h2>
-<div class="outline-text-2" id="text-orgac99b96">
+<div id="outline-container-orgead9dee" class="outline-2">
+<h2 id="orgead9dee">Introduction</h2>
+<div class="outline-text-2" id="text-orgead9dee">
 <p>
 We're going to learn a little something about the git data model by crafting the
 <code>.git</code> directory and blob objects by hand. It'll be fun!
@@ -266,9 +266,9 @@ We're going to learn a little something about the git data model by crafting the
 </div>
 </div>
 
-<div id="outline-container-org337a83d" class="outline-2">
-<h2 id="org337a83d">Where are we, and is git happy?</h2>
-<div class="outline-text-2" id="text-org337a83d">
+<div id="outline-container-orga1f5291" class="outline-2">
+<h2 id="orga1f5291">Where are we, and is git happy?</h2>
+<div class="outline-text-2" id="text-orga1f5291">
 <p>
 Let's start by seeing where we are, and if we're in a valid git repository.
 </p>
@@ -287,9 +287,9 @@ Git is not happy.
 </div>
 </div>
 
-<div id="outline-container-org5e89b0e" class="outline-2">
-<h2 id="org5e89b0e">Let's create the .git directory</h2>
-<div class="outline-text-2" id="text-org5e89b0e">
+<div id="outline-container-org1679133" class="outline-2">
+<h2 id="org1679133">Let's create the .git directory</h2>
+<div class="outline-text-2" id="text-org1679133">
 <p>
 Ok, so we know that we need a <code>.git</code> directory to start things off. Let's create
 one and fill it with the stuff that git needs.
@@ -330,16 +330,16 @@ can see git is now happy!
 </div>
 </div>
 
-<div id="outline-container-org75d2559" class="outline-2">
-<h2 id="org75d2559">Let's hash something!</h2>
-<div class="outline-text-2" id="text-org75d2559">
+<div id="outline-container-org971f742" class="outline-2">
+<h2 id="org971f742">Let's hash something!</h2>
+<div class="outline-text-2" id="text-org971f742">
 <p>
 We're going to hash the string "Welcome to SeaGL 2019!" by using the git
 plumbing command <code>hash object</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell" id="orgb4001c0"><span style="color: #DCDCCC; font-weight: bold;">echo</span> -n <span style="color: #CC9393;">'Welcome to SeaGL 2019!'</span> | git hash-object --stdin -w
+<pre class="src src-shell" id="orgbc48f14"><span style="color: #DCDCCC; font-weight: bold;">echo</span> -n <span style="color: #CC9393;">'Welcome to SeaGL 2019!'</span> | git hash-object --stdin -w
 </pre>
 </div>
 
@@ -357,9 +357,9 @@ of these. You can also refer to this hash by its first four characters like
 </div>
 </div>
 
-<div id="outline-container-org6bbdcd4" class="outline-2">
-<h2 id="org6bbdcd4">Where did git put it?</h2>
-<div class="outline-text-2" id="text-org6bbdcd4">
+<div id="outline-container-org49c5bae" class="outline-2">
+<h2 id="org49c5bae">Where did git put it?</h2>
+<div class="outline-text-2" id="text-org49c5bae">
 <p>
 Let's see how that was stored in the <code>.git</code> directory.
 </p>
@@ -389,9 +389,9 @@ hash.
 </div>
 </div>
 
-<div id="outline-container-org4a571ea" class="outline-2">
-<h2 id="org4a571ea">Can we just look at the object?</h2>
-<div class="outline-text-2" id="text-org4a571ea">
+<div id="outline-container-org3943b72" class="outline-2">
+<h2 id="org3943b72">Can we just look at the object?</h2>
+<div class="outline-text-2" id="text-org3943b72">
 <p>
 Nope. Git stores the objects in compressed format, but we can use <code>git cat-file</code>
 to take a peek inside it. We'll run it with the <code>-p</code> argument to pretty-print the
@@ -399,7 +399,7 @@ object.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell" id="orgf15badd">git cat-file -p 05d5
+<pre class="src src-shell" id="org786b8d6">git cat-file -p 05d5
 </pre>
 </div>
 
@@ -409,9 +409,9 @@ Welcome to SeaGL 2019!
 </div>
 </div>
 
-<div id="outline-container-org5de32b4" class="outline-2">
-<h2 id="org5de32b4">Let's do it ourselves</h2>
-<div class="outline-text-2" id="text-org5de32b4">
+<div id="outline-container-org35e57ff" class="outline-2">
+<h2 id="org35e57ff">Let's do it ourselves</h2>
+<div class="outline-text-2" id="text-org35e57ff">
 <p>
 OK, let's figure out how git compresses the file.
 </p>
@@ -504,9 +504,9 @@ myfile.close()
 </div>
 </div>
 
-<div id="outline-container-org3fd6172" class="outline-2">
-<h2 id="org3fd6172">Did it work!?</h2>
-<div class="outline-text-2" id="text-org3fd6172">
+<div id="outline-container-orgcf24261" class="outline-2">
+<h2 id="orgcf24261">Did it work!?</h2>
+<div class="outline-text-2" id="text-orgcf24261">
 <p>
 Now let's use <code>git cat-file</code> to verify that our program did everything
 right.
@@ -523,9 +523,9 @@ Welcome to SeaGL 2019!
 </div>
 </div>
 
-<div id="outline-container-org63d1f39" class="outline-2">
-<h2 id="org63d1f39">Final thoughts</h2>
-<div class="outline-text-2" id="text-org63d1f39">
+<div id="outline-container-org837666f" class="outline-2">
+<h2 id="org837666f">Final thoughts</h2>
+<div class="outline-text-2" id="text-org837666f">
 <p>
 In a future post, I'll show how we can use similar techniques to craft git trees
 and commits. See ya then!
